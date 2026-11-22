@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class IncidentService {
@@ -36,6 +37,7 @@ public class IncidentService {
     }
 
     // CREATE INCIDENT
+    @Transactional
     public IncidentResponse createIncident(IncidentRequest request) {
 
         MonitoredService service =
@@ -52,6 +54,7 @@ public class IncidentService {
     }
 
     // GET ALL INCIDENTS WITH FILTERING AND PAGINATION
+    @Transactional(readOnly = true)
     public Page<IncidentResponse> getAllIncidents(
             IncidentSeverity severity,
             IncidentStatus status,
@@ -71,6 +74,7 @@ public class IncidentService {
     }
 
     // GET INCIDENT BY ID
+    @Transactional(readOnly = true)
     public IncidentResponse getIncidentById(Integer id) {
 
         Incident incident = incidentRepository.findById(id)
@@ -82,6 +86,7 @@ public class IncidentService {
     }
 
     // UPDATE INCIDENT
+    @Transactional
     public IncidentResponse updateIncident(
             Integer id,
             IncidentRequest request) {
@@ -107,6 +112,7 @@ public class IncidentService {
     }
 
     // DELETE INCIDENT
+    @Transactional
     public void deleteIncident(Integer id) {
 
         Incident incident = incidentRepository.findById(id)

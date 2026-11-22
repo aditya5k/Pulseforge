@@ -3,6 +3,7 @@ package com.aditya.pulseforge.controller;
 
 import com.aditya.pulseforge.dto.AuthResponse;
 import com.aditya.pulseforge.dto.LoginRequest;
+import com.aditya.pulseforge.dto.LoginResponse;
 import com.aditya.pulseforge.dto.RegisterRequest;
 import com.aditya.pulseforge.service.AuthService;
 
@@ -24,12 +25,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
-        AuthResponse response = authService.login(request);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")

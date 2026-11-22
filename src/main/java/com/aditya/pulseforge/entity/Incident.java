@@ -32,7 +32,7 @@ public class Incident {
 
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
     private MonitoredService service;
 
