@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +29,7 @@ public class IncidentController {
 
     // CREATE INCIDENT
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEVELOPER')")
     public ResponseEntity<IncidentResponse> createIncident(
             @Valid @RequestBody IncidentRequest request) {
 
@@ -70,6 +72,7 @@ public class IncidentController {
 
     // UPDATE INCIDENT
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEVELOPER')")
     public ResponseEntity<IncidentResponse> updateIncident(
             @PathVariable Integer id,
             @Valid @RequestBody IncidentRequest request) {
@@ -80,6 +83,7 @@ public class IncidentController {
 
     // DELETE INCIDENT
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteIncident(
             @PathVariable Integer id) {
 

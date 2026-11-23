@@ -5,6 +5,7 @@ import com.aditya.pulseforge.dto.MonitoredServiceResponse;
 import com.aditya.pulseforge.service.MonitoredServiceService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class MonitoredServiceController {
 
     // CREATE
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MonitoredServiceResponse> createService(
             @Valid @RequestBody MonitoredServiceRequest request) {
 
@@ -33,6 +35,7 @@ public class MonitoredServiceController {
 
     // GET BY ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MonitoredServiceResponse> getServiceById(
             @PathVariable Integer id) {
 
@@ -44,6 +47,7 @@ public class MonitoredServiceController {
 
     // GET ALL
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<MonitoredServiceResponse>> getAllServices() {
 
         return ResponseEntity.ok(
@@ -53,6 +57,7 @@ public class MonitoredServiceController {
 
     // UPDATE
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<MonitoredServiceResponse> updateService(
             @PathVariable Integer id,
             @Valid @RequestBody MonitoredServiceRequest request) {
@@ -65,6 +70,7 @@ public class MonitoredServiceController {
 
     // DELETE
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteService(
             @PathVariable Integer id) {
 

@@ -26,7 +26,7 @@ Done: DB password now comes from `${DB_PASSWORD}`. Still to do: rotate the DB pa
 - [x] `app.admin.email=${ADMIN_EMAIL:}` / `app.admin.password=${ADMIN_PASSWORD:}` in properties
 - [ ] `config/AdminSeeder` (`CommandLineRunner`). **File not created yet, so no admin exists**
 - [ ] `ADMIN_EMAIL` / `ADMIN_PASSWORD` in IntelliJ run config
-- [ ] `@PreAuthorize` on Incident (create/update: ADMIN+DEVELOPER, delete: ADMIN) and
+- [~] `@PreAuthorize` on Incident ✅ (2026-11-22, Claude-written; create/update: ADMIN+DEVELOPER, delete: ADMIN), still pending on
   MonitoredService (create/update/delete: ADMIN)
 - [ ] `AccessDeniedException` → 403 `ErrorResponse` in `GlobalExceptionHandler`
   (use `org.springframework.security.access.AccessDeniedException`, not the `java.nio` one)
@@ -176,3 +176,20 @@ ticket booking · chat app.
   | N+1 | ✅ Good |
   **Next:** re-quiz filter role + 401/403 with PulseForge scenarios; fix `IncidentControllerTest`
   (`@MockitoBean JwtService`); count the N+1 queries before and after yourself.
+- **2026-11-22** — `IncidentControllerTest` fixed: **7/7 passing**. The owner had already added
+  `@MockitoBean JwtService` + `CustomUserDetailsService` and `addFilters = false`. The file
+  didn't compile because the package/import block was pasted twice and there was an extra `}`
+  at the end. Lesson: read the compiler error first, because a duplicate `package` line means a
+  copy-paste problem, not a Spring problem.
+- **2026-11-22** — Owner added `SecurityIntegrationTest` (8 tests) + `src/test/resources/application.properties`
+  (H2 + fake JWT key). Full suite: **33 run, 31 pass, 2 fail**. `contextLoads` passes now that
+  tests use H2. The 2 failures are **real findings, not test bugs**: VIEWER POST and DEVELOPER DELETE
+  return 404 instead of 403, because `IncidentController` has **no `@PreAuthorize` yet**, so any
+  logged-in user reaches the service. Auth (401) side is fully working: no token, wrong password,
+  tampered token, and valid token all behave correctly.
+  **Next:** owner adds `@PreAuthorize` to `IncidentController` → both tests should go green.
+- **2026-11-22** — `@PreAuthorize` added to `IncidentController` (Claude-written, at the owner's request):
+  POST/PUT `hasAnyRole('ADMIN','DEVELOPER')`, DELETE `hasRole('ADMIN')`, GET open to any
+  logged-in user. Full suite **33/33 green**, including both 403 tests. Status: **Implemented
+  (not owner-written)**. Still to do for RBAC: `@PreAuthorize` on `MonitoredServiceController`,
+  JSON 403 body (`AccessDeniedException` handler), AdminSeeder env vars.

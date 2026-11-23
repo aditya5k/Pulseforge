@@ -6,11 +6,14 @@ import com.aditya.pulseforge.enums.IncidentSeverity;
 import com.aditya.pulseforge.enums.IncidentStatus;
 import com.aditya.pulseforge.exception.GlobalExceptionHandler;
 import com.aditya.pulseforge.exception.ResourceNotFoundException;
+import com.aditya.pulseforge.security.CustomUserDetailsService;
+import com.aditya.pulseforge.security.JwtService;
 import com.aditya.pulseforge.service.IncidentService;
 
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(IncidentController.class)
+@AutoConfigureMockMvc(addFilters = false)   // controller logic only; security is tested in SecurityIntegrationTest
 @Import(GlobalExceptionHandler.class)
 class IncidentControllerTest {
 
@@ -39,6 +43,13 @@ class IncidentControllerTest {
 
     @MockitoBean
     private IncidentService incidentService;
+
+    // Needed so JwtAuthenticationFilter (a @Component) can be created in the test context
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     // Common test response
     private IncidentResponse createIncidentResponse() {
